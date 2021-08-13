@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
   Description:"This is Redmi",
   image:"https://images-eu.ssl-images-amazon.com/images/I/31kpAzgIFsL.jpg"
 }]
-  res.render('index', {products, admin:true});
+  res.render('index', {products,admin:false});
 });
 
 module.exports = router;
