@@ -5,7 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs=require('express-handlebars')
 var fileUpload = require('express-fileupload')
+var db = require('./config/connection')
 
+db.connect((err)=>{
+  if (err) console.error("Database connection Failed"+err)
+  else console.log("Database connection Successful")
+})
 var userRouter= require('./routes/user');
 var adminRouter = require('./routes/admin');
 
