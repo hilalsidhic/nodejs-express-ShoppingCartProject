@@ -6,6 +6,14 @@ var logger = require('morgan');
 var hbs=require('express-handlebars')
 var fileUpload = require('express-fileupload')
 var db = require('./config/connection')
+//Handlebars Custom functions
+var hbss = hbs.create({})
+
+hbss.handlebars.registerHelper('incremented', function (index) {
+  index++;
+  return index;
+});
+
 
 db.connect((err)=>{
   if (err) console.error("Database connection Failed"+err)

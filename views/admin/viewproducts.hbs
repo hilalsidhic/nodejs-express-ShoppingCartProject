@@ -1,3 +1,4 @@
+
 <section>
     <div class="container mt-3">
         <div class="row mb-3">
@@ -16,11 +17,11 @@
         <tbody>
             {{#each products}}
             <tr>
-                <th scope="row">1</th>
-                <td>{{this.Name}}</td>
+                <th scope="row">{{incremented @index}}</th>
+                <td>{{this.name}}</td>
                 <td>{{this.Category}}</td>
-                <td>{{this.Description}}</td>
-                <td> <img src="{{this.image}}" alt="image" style="width:50px;height:50px"></td>
+                <td>{{this.Description}}</td>   
+                <td> <img src="/Productimages/{{this._id}}.jpg" alt="image" style="width:50px;height:50px"></td>
             </tr>
            {{/each}}
         </tbody>
