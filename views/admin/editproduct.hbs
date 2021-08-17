@@ -1,0 +1,37 @@
+<section>
+    <div class="container mt-5">
+        <h2 class="mb-5">Edit your Product</h2>
+            <form action="/admin/editproduct/{{products._id}}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="">Name</label>
+                    <input type="text" class="form-control" name="name" placeholder="Enter Name" value="{{products.name}}">
+                </div>
+                <div class="form-group">
+                    <label for="">Category</label>
+                    <input type="text" class="form-control" name="Category" placeholder="Enter Category" value="{{products.Category}}">
+                </div>
+                <div class="form-group">
+                    <label for="">Price</label>
+                    <input type="text" name="Price" class="form-control" placeholder="Enter Price" value="{{products.Price}}">
+                </div>
+                <div class="form-group">
+                    <label for="">Description</label>
+                    <textarea class="form-control" name="Description" placeholder="Enter Description">{{products.Description}}</textarea>
+                </div>    
+                <div class="form-group">
+                    <label for="">Image</label>
+                    <img src="/Productimages/{{products._id}}.jpg" style="width: 100px;height:auto" alt="" id="image">
+                    <input type="file" name="Image" class="form-control"  onchange="showImage(event)">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+
+
+    </div>
+</section>
+<script>
+    function showImage(event) {
+        document.querySelector('#image').src=URL.createObjectURL(event.target.files[0]);
+    }
+</script>
