@@ -27,6 +27,7 @@ module.exports = {
         return new Promise((resolve, reject)=>{
             db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:ObjectId(userdata)}).then((result)=>{
                 resolve(result)
+                console.log(result)
             })
         })
     },
