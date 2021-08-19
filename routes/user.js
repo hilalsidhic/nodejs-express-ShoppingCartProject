@@ -102,6 +102,10 @@ router.post('/removeProduct',(req, res, next)=>{
   })
 })
 
+router.get('/placeorder',(req, res, next)=>{
+  res.render('user/placeorder')
+})
+
 
 
 module.exports = router;
