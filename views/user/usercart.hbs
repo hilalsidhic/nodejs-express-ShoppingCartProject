@@ -12,16 +12,16 @@
         </thead>
         <tbody>
             {{#each products}}
-            <tr>{{#each this.product}}
-                <td> <img src="/Productimages/{{this._id}}.jpg" alt="image" style="width:50px;height:50px"></td>
-                <td>{{this.name}}</td> {{/each}}
+            <tr>
+                <td> <img src="/Productimages/{{this.item}}.jpg" alt="image" style="width:50px;height:50px"></td>
+                <td>{{this.product.name}}</td>
                 <td>
-                     <button class="btn btn-primary mr-3" onclick="reduceCart('{{this._id}}')">-</button> 
-                      <span>{{this.quantity}}</span>
-                       <button class="btn btn-primary ml-3" onclick="increaseCart('{{this._id}}')">+</button>
+                     <button class="btn btn-primary mr-3" disabled onload="reduceQuantity({{this.quantity}})" onclick="changeCart('{{this.item}}','{{this._id}}','-1')">-</button> 
+                      <span id="prodQuant">{{this.quantity}}</span>
+                       <button class="btn btn-primary ml-3" onclick="changeCart('{{this.item}}','{{this._id}}', 1)">+</button>
                 </td>
                 <td>
-                     <a href="#" class="btn btn-danger" onclick="return confirm('are you sure you want to delete {{this.name}}?')">Delete</a>
+                     <a href="#" class="btn btn-danger" onclick="return confirm('are you sure you want to delete {{this.product.name}}?')">Delete</a>
                 </td>
             </tr>
            {{/each}}
@@ -30,3 +30,33 @@
         </div>
     </div>    
 </section>
+<script>
+    function changeCart(proId,cartId,count){
+        $.ajax({
+            url:'/changeProductQuantity',
+            data:{
+                cart:cartId,
+                product:proId,
+                count:count
+            },
+            method:'post',
+            success:(response)=>{
+                location.reload();
+            }
+
+        })
+    }
+    function reduceQuantity(quantity){
+        if(quantity>1){
+           var x= document.getElementById('reduceQuantity')
+           if(x.hasAttribute('disabled')){
+               x.removeAttribute('disabled')
+           }
+        }
+        else{
+            var x= document.getElementById('reduceQuantity')
+            x.setAttribute('disabled'   )
+        }
+    }
+
+</script>
