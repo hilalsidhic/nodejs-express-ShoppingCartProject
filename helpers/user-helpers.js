@@ -123,7 +123,7 @@ module.exports = {
         //   }
         // }
       ]).toArray()
-      console.log(cartItems);
+      
       resolve(cartItems)
     })
   },
@@ -144,17 +144,42 @@ module.exports = {
   changeQuantity:(details)=>{
     cartId=details.cart;
     prodId=details.product;
-    count=parseInt(details.count)
+    count=parseInt(details.count);
+    quantity=parseInt(details.quantity);
     return new Promise((resolve, reject)=>{
-      db.get().collection(collection.CART_COLLECTION)
-      .updateOne({_id:ObjectId(cartId),'products.item':ObjectId(prodId)},
+
+      if(count==-1 && quantity==1){
+
+        db.get().collection(collection.CART_COLLECTION)
+        .updateOne({_id:ObjectId(cartId)},{
+          $pull:{products:{item:ObjectId(prodId)}}
+        }).then((result)=>{resolve({removeProduct:true})})
+      }
+      else{
+        db.get().collection(collection.CART_COLLECTION)
+        .updateOne({_id:ObjectId(cartId),'products.item':ObjectId(prodId)},
                 {
                   $inc:{'products.$.quantity':count}
                 }
               ).then((result)=>{
-                resolve(result)
+                resolve(true)
               })
+         }
+      
     })
+  },
+  removeProductfromCart:(details)=>{
+    cartId=details.cart;
+    prodId=details.product;
+    return new Promise((resolve, reject)=>{
+      db.get().collection(collection.CART_COLLECTION)
+      .updateOne({_id:ObjectId(cartId)},{
+      $pull:{products:{item:ObjectId(prodId)}}
+      }).then((result)=>{
+      resolve(true)
+    })
+    })
+    
   }
     
 }

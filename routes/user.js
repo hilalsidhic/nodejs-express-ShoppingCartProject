@@ -71,10 +71,11 @@ router.get('/addtocart/:id',verifylogin,(req, res, next)=>{
  })
 })
 
-router.get('/cart',verifylogin,(req, res, next)=>{
+router.get('/cart',verifylogin,async(req, res, next)=>{
   let user=req.session.user;
+  cartCount=await userHelpers.getCartCount(req.session.user._id) 
   userHelpers.findincart(user._id).then((products)=>{
-    res.render('user/usercart',{user,products})
+    res.render('user/usercart',{user,products,cartCount})
   }) 
 })
 
@@ -82,13 +83,23 @@ router.post('/changeProductQuantity',(req, res, next)=>{
   details={
     cart:req.body.cart,
     product:req.body.product,
-    count:req.body.count
+    count:req.body.count,
+    quantity:req.body.quantity
   }
    userHelpers.changeQuantity(details).then((result)=>{
-     console.log(result);
      res.json(result)
    })
    
+})
+
+router.post('/removeProduct',(req, res, next)=>{
+  details={
+    cart:req.body.cart,
+    product:req.body.product   
+  }
+  userHelpers.removeProductfromCart(details).then((result)=>{
+    res.json(result)
+  })
 })
 
 
