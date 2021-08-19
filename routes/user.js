@@ -74,9 +74,7 @@ router.get('/addtocart/:id',verifylogin,(req, res, next)=>{
 router.get('/cart',verifylogin,(req, res, next)=>{
   let user=req.session.user;
   userHelpers.findincart(user._id).then((products)=>{
-    console.log(products[0].cartItems);
-    product = products[0].cartItems
-    res.render('user/usercart',{user,product})
+    res.render('user/usercart',{user,products})
   }) 
 })
 
