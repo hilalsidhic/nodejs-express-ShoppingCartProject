@@ -16,6 +16,7 @@
                 }
                 else{
                     document.getElementById(proId).innerHTML=quantity+parseInt(count)
+                    getTotalPrice();
                 }
                 
             }
