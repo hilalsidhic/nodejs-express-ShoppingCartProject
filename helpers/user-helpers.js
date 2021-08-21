@@ -209,7 +209,7 @@ module.exports = {
       resolve(cart.products)
     })
   },
-  placeOrder:((details,product,total)=>{
+  placeOrder:(details,product,total)=>{
     return new Promise((resolve, reject)=>{
       let status= details.paymentMethod ==='COD'?'placed':'pending'
       let orderObj={
@@ -230,5 +230,11 @@ module.exports = {
         resolve(orderObj.status)
       })
     })
-  }) 
+  },
+  getOrderDetails:(user)=>{
+    return new Promise(async(resolve, reject)=>{
+     let OrderDetails=await db.get().collection(collection.ORDER_COLLECTION).find({userId:ObjectId(user)}).toArray();
+     resolve(OrderDetails)
+    })
+  }
 }
