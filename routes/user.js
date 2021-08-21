@@ -132,18 +132,18 @@ router.get('/ordercomplete',(req, res, next)=>{
 })
 
 router.get('/viewOrders',verifylogin,async(req, res, next)=>{
+  let user=req.session.user
    let OrderDetails=await userHelpers.getOrderDetails(req.session.user._id)
-   res.render('user/vieworders',{OrderDetails}) 
+   res.render('user/vieworders',{OrderDetails,user}) 
 })
 
-router.post('/viewOrders',async(req,res,next)=>{
-  console.log(req.body);
-  let OrderDetails=await userHelpers.getOrderDetails(req.session.user._id)
-  for(var i=0; i<OrderDetails.length; i++){
-    if(OrderDetails[i]._id==req.body.order){
-      res.json(OrderDetails[i])
-    }
-  }
+router.get('/moreDetails/:id',verifylogin,(req, res, next)=>{
+  let user=req.session.user;
+  userHelpers.moreDetails(req.params.id).then((product)=>{
+    console.log(product)
+    res.render('user/moreDetails',{product,user})
+  })
+  
 })
 
 module.exports = router;
