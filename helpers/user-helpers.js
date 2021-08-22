@@ -2,6 +2,12 @@ const collection= require('../config/collection')
 const db= require('../config/connection')
 const bcrypt=require('bcrypt')
 const { ObjectId } = require('mongodb')
+const Razorpay= require('razorpay')
+
+var instance = new Razorpay({
+   key_id: 'rzp_test_idqekq8djcJXxE', 
+   key_secret: '7CxNGxE3AFjSKPLGo18G15Bz'
+})
 
 module.exports = {
   doSignup: (userdata) => {
@@ -227,7 +233,7 @@ module.exports = {
       }
       db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((result)=>{
         db.get().collection(collection.CART_COLLECTION).deleteOne({user:ObjectId(orderObj.userId)})
-        resolve(orderObj.status)
+        resolve(orderObj)
       })
     })
   },
@@ -268,5 +274,21 @@ module.exports = {
       ]).toArray()
       resolve(orderItems)
     })
+  },
+  orderPayment:(orderId,total)=>{
+    console.log(orderId);
+    return new Promise((resolve, reject)=>{
+      var options = {
+        amount: total[0].totals,  // amount in the smallest currency unit
+        currency: "INR",
+        receipt: orderId
+        };
+     instance.orders.create(options, function(err, order) {
+        if(err) console.log(err)
+        console.log(order);
+        resolve(order)
+      });
+    })
+    
   }
 }
