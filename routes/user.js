@@ -73,9 +73,13 @@ router.get('/addtocart/:id',verifylogin,(req, res, next)=>{
 
 router.get('/cart',verifylogin,async(req, res, next)=>{
   let user=req.session.user;
+  let cartTotal=0
   cartCount=await userHelpers.getCartCount(req.session.user._id) 
-  Total=await userHelpers.getCartTotal(req.session.user._id)
-  cartTotal=Total[0].totals
+  if(cartCount.length > 0){
+    let Total=await userHelpers.getCartTotal(req.session.user._id)
+    cartTotal=Total[0].totals
+  }
+  
   userHelpers.findincart(user._id).then((products)=>{
     res.render('user/usercart',{user,products,cartCount,cartTotal})
   }) 
@@ -115,7 +119,6 @@ router.post('/placeorder',async(req, res, next)=>{
   let total= await userHelpers.getCartTotal(req.body.user)
   let products= await userHelpers.getCartProducts(req.body.user)
   userHelpers.placeOrder(req.body,products,total).then((result)=>{
-    console.log(result) 
     if(result.paymentMethod === 'COD'){
       res.json(result.status)
     }else{
@@ -134,7 +137,8 @@ router.get('/cartTotal',async(req, res, next)=>{
 })
 
 router.get('/ordercomplete',(req, res, next)=>{
-  res.render('user/ordercomplete')
+   let user=req.session.user
+  res.render('user/ordercomplete',{user})
 })
 
 router.get('/viewOrders',verifylogin,async(req, res, next)=>{
@@ -151,8 +155,16 @@ router.get('/moreDetails/:id',verifylogin,(req, res, next)=>{
   })
 })
 
-router.post('/verifyRazorpay',(req, res, next)=>{
+router.post('/verifyRazorpa',(req, res, next)=>{
   console.log(req.body);
+  userHelpers.verifyRazorpay(req.body).then(()=>{
+    userHelpers.changeStatus(req.body['order[receipt]']).then(()=>{
+      res.json({status:true})
+    })
+  }).catch((error)=>{
+    console.log(error);
+    res.json({status:"payment failed"})
+  })
 })
 
 module.exports = router;

@@ -279,7 +279,7 @@ module.exports = {
     console.log(orderId);
     return new Promise((resolve, reject)=>{
       var options = {
-        amount: total[0].totals,  // amount in the smallest currency unit
+        amount: total[0].totals*100,  // amount in the smallest currency unit
         currency: "INR",
         receipt: orderId
         };
@@ -290,5 +290,35 @@ module.exports = {
       });
     })
     
+  },
+  verifyRazorpay:(details)=>{
+    return new Promise((resolve, reject)=>{
+      let body=details['payment[razorpay_order_id]'] + "|" + details['payment[razorpay_payment_id]'];
+      var crypto = require("crypto");
+      var expectedSignature = crypto.createHmac('sha256', '7CxNGxE3AFjSKPLGo18G15Bz')
+                                      .update(body.toString())
+                                      .digest('hex');
+      if(expectedSignature === details['payment[razorpay_signature]']){
+        resolve({"signatureIsValid":"true"})
+      }  
+      else{
+        reject(err)
+      }
+    })
+    
+
+  },
+  changeStatus:(orderId)=>{
+    return new Promise((resolve, reject)=>{
+      db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:ObjectId(orderId)},{
+        $set:{
+          status:'placed'
+        }
+      }).then(()=>{
+        console.log("status changed")
+         resolve("true")
+      })
+      
+    })
   }
 }
