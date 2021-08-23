@@ -4,7 +4,7 @@
         <div class="row mb-3">
             <a href="admin/addProduct" class="btn btn-success ml-auto">Add a product</a>
         </div>
-    <table class="table table-hover">
+    <table class="table table-hover" id="tableproducts">
         <thead class="table-dark">
             <tr>
                 <th scope="col">No.</th>
@@ -36,3 +36,8 @@
     </table>
     </div>
 </section>
+<script>
+    $(document).ready( function () {
+    $('#tableproducts').DataTable();
+} );
+</script>

@@ -4,7 +4,7 @@ var productHelpers= require('../helpers/product-helpers')
 var userHelpers= require('../helpers/user-helpers')
 const verifylogin=(req, res, next) => {
   console.log("done");
-  if(req.session.loggedIn){
+  if(req.session.userloggedIn){
     next()
   }else{
     res.redirect("/login")
@@ -13,7 +13,7 @@ const verifylogin=(req, res, next) => {
 /* GET home page. */
 router.get("/",async function (req, res, next) {
   let cartCount=null;
-  if(req.session.loggedIn){
+  if(req.session.userloggedIn){
     cartCount=await userHelpers.getCartCount(req.session.user._id) 
   }
   productHelpers.showProduct().then((products) => {
@@ -23,23 +23,23 @@ router.get("/",async function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
-  if(req.session.loggedIn) {
+  if(req.session.userloggedIn) {
     res.redirect('/')
   }else{
-  res.render("user/userlogin",{"loginErr":req.session.loginError})
-  req.session.loginError=false;
+  res.render("user/userlogin",{"loginErr":req.session.userloginError})
+  req.session.userloginError=false;
   }
 })
 
 router.post("/login", function (req, res, next){
   userHelpers.doLogin(req.body).then((response) => {
-    if (response.status){
-      req.session.loggedIn = true;
+    if (response.status){    
       req.session.user = response.user;
+      req.session.userloggedIn = true;
       res.redirect("/")
     }
     else{
-      req.session.loginError = true;
+      req.session.userloginError = true;
       res.redirect('/login')
     }
   })
@@ -50,17 +50,17 @@ router.get("/signup",(req, res, next)=>{
 })
 
 router.post("/signup",(req, res, next)=>{
-  userHelpers.doSignup(req.body).then((response) => {
-      req.session.loggedIn = true;
+  userHelpers.doSignup(req.body).then((response) => {     
       req.session.user = response;
+      req.session.userloggedIn = true;
       res.redirect("/")
   })
 })
 
 router.get('/logout',(req, res, next)=>{
-  req.session.destroy(()=>{
+    req.session.user=null;
+    req.session.userloggedIn = false;
     res.redirect('/')
-  })
 })
 
 router.get('/addtocart/:id',verifylogin,(req, res, next)=>{
