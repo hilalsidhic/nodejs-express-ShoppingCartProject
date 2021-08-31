@@ -1,1 +1,1 @@
-*.* linguist-language=Handlebars
+*.css linguist-detectable=false
